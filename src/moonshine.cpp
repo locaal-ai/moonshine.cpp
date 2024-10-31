@@ -67,21 +67,29 @@ std::vector<int64_t> MoonshineModel::generate(const std::vector<float> &audio_sa
         1);
 
     std::cout << "Preprocess. Output size: " << preprocessed[0].GetTensorTypeAndShapeInfo().GetElementCount() << std::endl;
+    // print the shape of the output tensor
+    auto shape = preprocessed[0].GetTensorTypeAndShapeInfo().GetShape();
+    for (size_t i = 0; i < shape.size(); i++)
+    {
+        std::cout << "Shape[" << i << "]: " << shape[i] << std::endl;
+    }
 
     // Calculate sequence length
-    std::vector<int64_t> seq_len = {preprocessed[0].GetTensorTypeAndShapeInfo().GetShape()[1]};
+    std::vector<int32_t> seq_len = {(int32_t)shape[1]};
     std::vector<int64_t> seq_len_shape = {1};
-    Ort::Value seq_len_tensor = Ort::Value::CreateTensor<int64_t>(
+    Ort::Value seq_len_tensor = Ort::Value::CreateTensor<int32_t>(
         memory_info_,
         seq_len.data(),
-        1,
+        seq_len.size(),
         seq_len_shape.data(),
         seq_len_shape.size());
 
     std::vector<const char *> encode_input_names = {"args_0", "args_1"};
     std::vector<const char *> encode_ouput_names = {"layer_normalization_12"};
     std::vector<Ort::Value> encode_inputs;
-    encode_inputs = {std::move(preprocessed[0]), std::move(seq_len_tensor)};
+    encode_inputs.reserve(2); // Reserve space for the inputs
+    encode_inputs.push_back(std::move(preprocessed[0]));
+    encode_inputs.push_back(std::move(seq_len_tensor));
     // Encode
     auto context = encode_->Run(
         Ort::RunOptions{nullptr},
@@ -94,7 +102,7 @@ std::vector<int64_t> MoonshineModel::generate(const std::vector<float> &audio_sa
     // Initial token
     std::vector<int64_t> tokens = {1}; // Start token
     std::vector<int64_t> input_shape = {1, 1};
-    Ort::Value input_tensor = Ort::Value::CreateTensor<int64_t>(
+    Ort::Value inputs_tensor = Ort::Value::CreateTensor<int64_t>(
         memory_info_,
         tokens.data(),
         1,
@@ -137,16 +145,26 @@ std::vector<int64_t> MoonshineModel::generate(const std::vector<float> &audio_sa
     };
 
     std::cout << "Max len: " << max_len << std::endl;
-    std::cout << "decode input size: " << input_tensor.GetTensorTypeAndShapeInfo().GetElementCount() << std::endl;
+    std::cout << "decode args_0: " << inputs_tensor.GetTensorTypeAndShapeInfo().GetElementCount() << std::endl;
+    std::cout << "decode args_1: " << context[0].GetTensorTypeAndShapeInfo().GetElementCount() << std::endl;
+    std::cout << "decode args_2: " << seq_len_tensor.GetTensorTypeAndShapeInfo().GetElementCount() << std::endl;
+
+    std::vector<Ort::Value> uncached_decode_inputs;
+    uncached_decode_inputs.reserve(3); // Reserve space for the inputs
+    uncached_decode_inputs.push_back(std::move(inputs_tensor));
+    uncached_decode_inputs.push_back(std::move(context[0]));
+    uncached_decode_inputs.push_back(std::move(seq_len_tensor));
 
     // Initial uncached decode
     auto decode_output = uncached_decode_->Run(
         Ort::RunOptions{nullptr},
         decode_input_names.data(),
-        &input_tensor,
-        1,
+        uncached_decode_inputs.data(),
+        uncached_decode_inputs.size(),
         decode_output_names.data(),
         uncached_decode_->GetOutputCount());
+
+    std::cout << "decode output: " << decode_output[0].GetTensorTypeAndShapeInfo().GetElementCount() << std::endl;
 
     // Generate tokens
     for (size_t i = 0; i < max_len; ++i)
@@ -175,7 +193,7 @@ std::vector<int64_t> MoonshineModel::generate(const std::vector<float> &audio_sa
 
         // Prepare next input
         std::vector<int64_t> next_input = {next_token};
-        input_tensor = Ort::Value::CreateTensor<int64_t>(
+        inputs_tensor = Ort::Value::CreateTensor<int64_t>(
             memory_info_,
             next_input.data(),
             1,
@@ -184,7 +202,7 @@ std::vector<int64_t> MoonshineModel::generate(const std::vector<float> &audio_sa
 
         // Run cached decode
         std::vector<Ort::Value> cached_inputs;
-        cached_inputs.push_back(std::move(input_tensor));
+        cached_inputs.push_back(std::move(inputs_tensor));
         cached_inputs.push_back(std::move(context[0]));
         cached_inputs.push_back(std::move(seq_len_tensor));
         for (size_t j = 1; j < decode_output.size(); ++j)

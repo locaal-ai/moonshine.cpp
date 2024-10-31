@@ -22,6 +22,10 @@ std::vector<float> readWavFile(const std::string &filename)
     while (file.read(reinterpret_cast<char *>(&sample), sizeof(int16_t)))
     {
         pcm_data.push_back(sample);
+        if (pcm_data.size() >= 160000)
+        {
+            break;
+        }
     }
 
     // Convert to float32 normalized [-1.0, 1.0]
