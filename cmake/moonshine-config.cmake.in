@@ -1,0 +1,12 @@
+# cmake/moonshine-config.cmake.in
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/moonshine-targets.cmake")
+
+# Find dependencies
+include(CMakeFindDependencyMacro)
+
+# Add any future dependencies here if needed
+# find_dependency(SomePackage)
+
+check_required_components(moonshine)
