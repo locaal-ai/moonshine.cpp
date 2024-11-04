@@ -14,13 +14,14 @@ endif()
 
 # Compiler flags
 if(MSVC)
-    add_compile_options(/W4)
+    add_compile_options(/W4 /utf-8)
 else()
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 # Find ONNX Runtime package
 include(cmake/FetchOnnxruntime.cmake)
+include(cmake/FetchNlohmannJson.cmake)
 
 # Create moonshine library
 add_library(moonshine
@@ -35,7 +36,7 @@ target_include_directories(moonshine
     ${ONNXRUNTIME_INCLUDE_DIRS}
 )
 
-target_link_libraries(moonshine PRIVATE Ort)
+target_link_libraries(moonshine PUBLIC Ort nlohmann_json::nlohmann_json)
 
 # Create example executable
 add_executable(moonshine_example examples/demo.cpp)
@@ -53,8 +54,8 @@ target_include_directories(moonshine_example
 # Installation rules
 include(GNUInstallDirs)
 
-install(TARGETS moonshine
-    EXPORT moonshine-targets
+install(TARGETS moonshine Ort nlohmann_json
+    EXPORT moonshine-targets 
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

@@ -22,7 +22,7 @@ std::vector<float> readWavFile(const std::string &filename)
     while (file.read(reinterpret_cast<char *>(&sample), sizeof(int16_t)))
     {
         pcm_data.push_back(sample);
-        if (pcm_data.size() >= 160000)
+        if (pcm_data.size() >= 16000 * 30)
         {
             break;
         }
@@ -31,9 +31,15 @@ std::vector<float> readWavFile(const std::string &filename)
     // Convert to float32 normalized [-1.0, 1.0]
     std::vector<float> float_data;
     float_data.reserve(pcm_data.size());
-    for (const auto &sample : pcm_data)
+    for (const auto &pcm_sample : pcm_data)
     {
-        float_data.push_back(static_cast<float>(sample) / 32768.0f);
+        float_data.push_back(static_cast<float>(pcm_sample) / 32768.0f);
+    }
+
+    // print the first 100 samples
+    for (size_t i = 0; i < 100; i++)
+    {
+        std::cout << "Sample[" << i << "]: " << float_data[i] << std::endl;
     }
 
     return float_data;
@@ -67,6 +73,10 @@ int main(int argc, char *argv[])
             std::cout << token << " ";
         }
         std::cout << "\n";
+
+        // Detokenize tokens
+        std::string result = model.detokenize(tokens);
+        std::cout << "Detokenized: " << result << "\n";
     }
     catch (const Ort::Exception &e)
     {
