@@ -1,0 +1,51 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-format:
+    name: Check Formatting 🔍
+    uses: ./.github/workflows/clang-format-check.yaml
+    permissions:
+      contents: read
+    
+  build:
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        build_type: [Release, Debug]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up CMake
+      uses: jwlawson/actions-setup-cmake@v2
+
+    - name: Set up dependencies
+      run: |
+        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ wget
+        elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+          brew update
+          brew install cmake
+        elif [ "${{ matrix.os }}" == "windows-latest" ]; then
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+        fi
+
+    - name: Configure CMake
+      run: cmake -B build -S . -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
+    - name: Build
+      run: cmake --build build --config ${{ matrix.build_type }}
+
+    - name: Install
+      run: cmake --install build --prefix dist

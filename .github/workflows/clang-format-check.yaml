@@ -1,0 +1,21 @@
+name: Clang Format Check
+
+on:
+    workflow_call:
+
+jobs:
+  clang-format-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Clang
+      run: sudo apt-get install -y clang-format
+
+    - name: Run Clang Format
+      run: |
+        clang-format --version
+        find ./src -name '*.cpp' -o -name '*.hpp' | xargs clang-format -i
+        git diff --exit-code
