@@ -118,7 +118,4 @@ jobs:
           generate_release_notes: true
           body_path: ${{ github.workspace }}/CHECKSUMS.txt
           files: |
-            ${{ github.workspace }}/uploads/note-taker-*.zip
-            ${{ github.workspace }}/uploads/note-taker-*.exe
-            ${{ github.workspace }}/uploads/note-taker-*.dmg
-            ${{ github.workspace }}/uploads/note-taker-*.tar
+            ${{ github.workspace }}/uploads/moonshine-cpp-*.zip
