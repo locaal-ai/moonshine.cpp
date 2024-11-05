@@ -30,7 +30,7 @@ Standalone C++ implementation of [Moonshine ASR](https://github.com/usefulsensor
 3. Run the build script:
 
     ```ps1
-    .\scripts\build.ps1
+    .\scripts\build.ps1 -BuildType Release
     ```
 
 ### Building on Linux/MacOS
@@ -69,6 +69,36 @@ Standalone C++ implementation of [Moonshine ASR](https://github.com/usefulsensor
     ```sh
     cmake --install . --prefix ../dist
     ```
+
+### Build results
+
+After building you should have a folder like so (e.g. on Windows):
+
+```
+./dist
+├───bin
+│       moonshine_example.exe
+│       onnxruntime.dll
+│       onnxruntime_providers_shared.dll
+│       
+├───include
+│   └───moonshine
+│           moonshine.hpp
+│
+└───lib
+    │   moonshine.lib
+    │   onnxruntime.dll
+    │   onnxruntime_providers_shared.dll
+    │
+    └───cmake
+        └───moonshine
+                moonshine-config-version.cmake
+                moonshine-config.cmake
+                moonshine-targets-release.cmake
+                moonshine-targets.cmake
+```
+
+Which will allow you to link against moonshine.cpp with a CMake `find_package()`.
 
 ## Example Usage
 
