@@ -1,12 +1,12 @@
 include(FetchContent)
 
 set(CUSTOM_ONNXRUNTIME_URL
-    ""
-    CACHE STRING "URL of a downloaded ONNX Runtime tarball")
+  ""
+  CACHE STRING "URL of a downloaded ONNX Runtime tarball")
 
 set(CUSTOM_ONNXRUNTIME_HASH
-    ""
-    CACHE STRING "Hash of a downloaded ONNX Runtime tarball")
+  ""
+  CACHE STRING "Hash of a downloaded ONNX Runtime tarball")
 
 set(Onnxruntime_VERSION "1.19.2")
 
@@ -56,19 +56,20 @@ set(ONNXRUNTIME_INCLUDE_DIRS "${onnxruntime_SOURCE_DIR}/include")
 if(APPLE)
   set(Onnxruntime_LIB "${onnxruntime_SOURCE_DIR}/lib/libonnxruntime.${Onnxruntime_VERSION}.dylib")
 
-  target_link_libraries(Ort PRIVATE "${Onnxruntime_LIB}")
-  target_include_directories(Ort PRIVATE "${onnxruntime_SOURCE_DIR}/include")
-  target_sources(Ort PRIVATE "${Onnxruntime_LIB}")
+  target_link_libraries(Ort INTERFACE "${Onnxruntime_LIB}")
+  target_include_directories(Ort INTERFACE "${onnxruntime_SOURCE_DIR}/include")
+  target_sources(Ort INTERFACE "${Onnxruntime_LIB}")
   set_property(SOURCE "${Onnxruntime_LIB}" PROPERTY MACOSX_PACKAGE_LOCATION Frameworks)
   source_group("Frameworks" FILES "${Onnxruntime_LIB}")
   add_custom_command(
     TARGET Ort
     POST_BUILD
     COMMAND
-      ${CMAKE_INSTALL_NAME_TOOL} -change "@rpath/libonnxruntime.${Onnxruntime_VERSION}.dylib"
-      "@loader_path/../Frameworks/libonnxruntime.${Onnxruntime_VERSION}.dylib" $<TARGET_FILE:${CMAKE_PROJECT_NAME}>)
+    ${CMAKE_INSTALL_NAME_TOOL} -change "@rpath/libonnxruntime.${Onnxruntime_VERSION}.dylib"
+    "@loader_path/../Frameworks/libonnxruntime.${Onnxruntime_VERSION}.dylib" $<TARGET_FILE:${CMAKE_PROJECT_NAME}>)
 elseif(MSVC)
   set(Onnxruntime_LIB_NAMES onnxruntime;onnxruntime_providers_shared)
+
   foreach(lib_name IN LISTS Onnxruntime_LIB_NAMES)
     add_library(Ort::${lib_name} SHARED IMPORTED)
     set_target_properties(Ort::${lib_name} PROPERTIES IMPORTED_IMPLIB ${onnxruntime_SOURCE_DIR}/lib/${lib_name}.lib)
@@ -80,9 +81,9 @@ elseif(MSVC)
 else()
   set(Onnxruntime_LINK_LIBS "${onnxruntime_SOURCE_DIR}/lib/libonnxruntime.so.${Onnxruntime_VERSION}")
   set(Onnxruntime_ADDITIONAL_LIBS
-  "${onnxruntime_SOURCE_DIR}/lib/libonnxruntime_providers_shared.so"
-  "${onnxruntime_SOURCE_DIR}/lib/libonnxruntime.so" "${onnxruntime_SOURCE_DIR}/lib/libonnxruntime.so.1")
-  
+    "${onnxruntime_SOURCE_DIR}/lib/libonnxruntime_providers_shared.so"
+    "${onnxruntime_SOURCE_DIR}/lib/libonnxruntime.so" "${onnxruntime_SOURCE_DIR}/lib/libonnxruntime.so.1")
+
   target_link_libraries(Ort INTERFACE "${Onnxruntime_LINK_LIBS}")
 
   if(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
@@ -90,6 +91,7 @@ else()
   else()
     set(Onnxruntime_INSTALL_LIBS ${Onnxruntime_LINK_LIBS} ${Onnxruntime_ADDITIONAL_LIBS})
   endif()
+
   install(FILES ${Onnxruntime_INSTALL_LIBS} DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/${CMAKE_PROJECT_NAME}")
   set_target_properties(Ort PROPERTIES INSTALL_RPATH "$ORIGIN/${CMAKE_PROJECT_NAME}")
 endif()
