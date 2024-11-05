@@ -1,5 +1,11 @@
 # moonshine.cpp
 
+<div align="center">
+
+[![Build Status](https://github.com/locaal-ai/moonshine.cpp/actions/workflows/build.yaml/badge.svg)](https://github.com/locaal-ai/moonshine.cpp/actions)
+
+</div>
+
 Standalone C++ implementation of [Moonshine ASR](https://github.com/usefulsensors/moonshine) with [ONNXRuntime](https://github.com/microsoft/onnxruntime) and no other dependencies.
 
 ## Table of Contents
