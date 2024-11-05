@@ -29,18 +29,6 @@ jobs:
     - name: Set up CMake
       uses: jwlawson/actions-setup-cmake@v2
 
-    - name: Set up dependencies
-      run: |
-        if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-          sudo apt-get update
-          sudo apt-get install -y cmake g++ wget
-        elif [ "${{ matrix.os }}" == "macos-latest" ]; then
-          brew update
-          brew install cmake
-        elif [ "${{ matrix.os }}" == "windows-latest" ]; then
-          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
-        fi
-
     - name: Configure CMake
       run: cmake -B build -S . -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
@@ -48,4 +36,4 @@ jobs:
       run: cmake --build build --config ${{ matrix.build_type }}
 
     - name: Install
-      run: cmake --install build --prefix dist
+      run: cmake --install build --prefix ./dist
