@@ -26,4 +26,4 @@ if ($LASTEXITCODE -eq 0) {
 }
 
 # Install to current directory
-cmake --install "$ROOT_DIR/build" --prefix "$ROOT_DIR/dist"
+cmake --install "$ROOT_DIR/build" --prefix "$ROOT_DIR/dist" --config $BuildType

@@ -36,7 +36,8 @@ target_include_directories(moonshine
     ${ONNXRUNTIME_INCLUDE_DIRS}
 )
 
-target_link_libraries(moonshine PUBLIC Ort nlohmann_json::nlohmann_json)
+target_link_libraries(moonshine PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(moonshine INTERFACE Ort)
 
 # Create example executable
 add_executable(moonshine_example examples/demo.cpp)

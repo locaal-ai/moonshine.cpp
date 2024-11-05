@@ -61,11 +61,6 @@ if(APPLE)
   target_sources(Ort PRIVATE "${Onnxruntime_LIB}")
   set_property(SOURCE "${Onnxruntime_LIB}" PROPERTY MACOSX_PACKAGE_LOCATION Frameworks)
   source_group("Frameworks" FILES "${Onnxruntime_LIB}")
-  # # add a codesigning step
-  # add_custom_command(
-  #   TARGET "${CMAKE_PROJECT_NAME}"
-  #   PRE_BUILD VERBATIM
-  #   COMMAND /usr/bin/codesign --force --verify --verbose --sign "${CODESIGN_IDENTITY}" "${Onnxruntime_LIB}")
   add_custom_command(
     TARGET Ort
     POST_BUILD
