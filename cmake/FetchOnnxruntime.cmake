@@ -59,14 +59,14 @@ if(APPLE)
   target_link_libraries(Ort INTERFACE "${Onnxruntime_LIB}")
   target_include_directories(Ort INTERFACE "${onnxruntime_SOURCE_DIR}/include")
   target_sources(Ort INTERFACE "${Onnxruntime_LIB}")
-  set_property(SOURCE "${Onnxruntime_LIB}" PROPERTY MACOSX_PACKAGE_LOCATION Frameworks)
-  source_group("Frameworks" FILES "${Onnxruntime_LIB}")
-  add_custom_command(
-    TARGET Ort
-    POST_BUILD
-    COMMAND
-    ${CMAKE_INSTALL_NAME_TOOL} -change "@rpath/libonnxruntime.${Onnxruntime_VERSION}.dylib"
-    "@loader_path/../Frameworks/libonnxruntime.${Onnxruntime_VERSION}.dylib" $<TARGET_FILE:${CMAKE_PROJECT_NAME}>)
+  # set_property(SOURCE "${Onnxruntime_LIB}" PROPERTY MACOSX_PACKAGE_LOCATION Frameworks)
+  # source_group("Frameworks" FILES "${Onnxruntime_LIB}")
+  # add_custom_command(
+  #   TARGET Ort
+  #   POST_BUILD
+  #   COMMAND
+  #   ${CMAKE_INSTALL_NAME_TOOL} -change "@rpath/libonnxruntime.${Onnxruntime_VERSION}.dylib"
+  #   "@loader_path/../Frameworks/libonnxruntime.${Onnxruntime_VERSION}.dylib" $<TARGET_FILE:${CMAKE_PROJECT_NAME}>)
 elseif(MSVC)
   set(Onnxruntime_LIB_NAMES onnxruntime;onnxruntime_providers_shared)
 
