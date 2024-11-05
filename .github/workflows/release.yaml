@@ -74,20 +74,18 @@ jobs:
           commit_hash="${GITHUB_SHA:0:9}"
 
           variants=(
-            'linux'
-            'macos'
-            'windows'
+            'linux-latest-Release'
+            'macos-latest-Release'
+            'windows-latest-Release'
+            'linux-latest-Debug'
+            'macos-latest-Debug'
+            'windows-latest-Debug'
           )
 
           mkdir -p "${{ github.workspace }}/uploads"
 
           for variant in "${variants[@]}"; do
-
-            candidates=(*-${variant}/@(*))
-
-            for candidate in "${candidates[@]}"; do
-              cp "${candidate}" "${{ github.workspace }}/uploads/moonshine-cpp-${variant}-${GITHUB_REF_NAME}.${candidate##*.}"
-            done
+            zip "${{ github.workspace }}/uploads/moonshine-cpp-${variant}-${GITHUB_REF_NAME}.zip" "${variant}"
           done
 
       - name: Upload Release Artifacts 📤
