@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <chrono>
 
 std::vector<float> readWavFile(const std::string &filename)
 {
@@ -36,12 +37,6 @@ std::vector<float> readWavFile(const std::string &filename)
         float_data.push_back(static_cast<float>(pcm_sample) / 32768.0f);
     }
 
-    // print the first 100 samples
-    for (size_t i = 0; i < 100; i++)
-    {
-        std::cout << "Sample[" << i << "]: " << float_data[i] << std::endl;
-    }
-
     return float_data;
 }
 
@@ -58,13 +53,20 @@ int main(int argc, char *argv[])
         // Read audio file
         auto audio_samples = readWavFile(argv[2]);
 
-        std::cout << "Read " << audio_samples.size() << " samples\n";
+        std::cout << "Read " << audio_samples.size() << " samples from file ("
+                  << audio_samples.size() / 16000.0 << " seconds)\n";
 
         // Initialize model
         MoonshineModel model(argv[1]);
 
         // Generate tokens
+
+        auto start = std::chrono::high_resolution_clock::now();
         auto tokens = model.generate(audio_samples);
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> duration = end - start;
+
+        std::cout << "Token generation took " << duration.count() << " seconds\n";
 
         // Print tokens (you'll need to decode these using your tokenizer)
         std::cout << "Generated tokens: ";
