@@ -5,6 +5,7 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_call:
 
 jobs:
   check-format:
@@ -37,3 +38,9 @@ jobs:
 
     - name: Install
       run: cmake --install build --prefix ${{ github.workspace }}/dist --config ${{ matrix.build_type }}
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.os }}-${{ matrix.build_type }}
+        path: ${{ github.workspace }}/dist
