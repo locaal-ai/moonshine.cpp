@@ -30,10 +30,10 @@ jobs:
       uses: jwlawson/actions-setup-cmake@v2
 
     - name: Configure CMake
-      run: cmake -B build -S . -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+      run: cmake -B build -S . -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/dist
 
     - name: Build
       run: cmake --build build --config ${{ matrix.build_type }}
 
     - name: Install
-      run: cmake --install build --prefix ./dist
+      run: cmake --install build --prefix ${{ github.workspace }}/dist
