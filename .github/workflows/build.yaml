@@ -36,4 +36,4 @@ jobs:
       run: cmake --build build --config ${{ matrix.build_type }}
 
     - name: Install
-      run: cmake --install build --prefix ${{ github.workspace }}/dist
+      run: cmake --install build --prefix ${{ github.workspace }}/dist --config ${{ matrix.build_type }}
