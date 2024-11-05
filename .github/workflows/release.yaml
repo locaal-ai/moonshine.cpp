@@ -74,10 +74,10 @@ jobs:
           commit_hash="${GITHUB_SHA:0:9}"
 
           variants=(
-            'linux-latest-Release'
+            'ubuntu-latest-Release'
             'macos-latest-Release'
             'windows-latest-Release'
-            'linux-latest-Debug'
+            'ubuntu-latest-Debug'
             'macos-latest-Debug'
             'windows-latest-Debug'
           )
