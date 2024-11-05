@@ -61,7 +61,7 @@ if(APPLE)
     $<BUILD_INTERFACE:${ONNXRUNTIME_INCLUDE_DIRS}>
     $<INSTALL_INTERFACE:include>
   )
-  target_sources(Ort INTERFACE "${Onnxruntime_LIB}")
+  # target_sources(Ort INTERFACE "${Onnxruntime_LIB}")
   # set_property(SOURCE "${Onnxruntime_LIB}" PROPERTY MACOSX_PACKAGE_LOCATION Frameworks)
   # source_group("Frameworks" FILES "${Onnxruntime_LIB}")
   # add_custom_command(
