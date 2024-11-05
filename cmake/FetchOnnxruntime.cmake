@@ -57,7 +57,10 @@ if(APPLE)
   set(Onnxruntime_LIB "${onnxruntime_SOURCE_DIR}/lib/libonnxruntime.${Onnxruntime_VERSION}.dylib")
 
   target_link_libraries(Ort INTERFACE "${Onnxruntime_LIB}")
-  target_include_directories(Ort INTERFACE "${onnxruntime_SOURCE_DIR}/include")
+  target_include_directories(Ort INTERFACE
+    $<BUILD_INTERFACE:${ONNXRUNTIME_INCLUDE_DIRS}>
+    $<INSTALL_INTERFACE:include>
+  )
   target_sources(Ort INTERFACE "${Onnxruntime_LIB}")
   # set_property(SOURCE "${Onnxruntime_LIB}" PROPERTY MACOSX_PACKAGE_LOCATION Frameworks)
   # source_group("Frameworks" FILES "${Onnxruntime_LIB}")
