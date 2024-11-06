@@ -108,19 +108,43 @@ Which will allow you to link against moonshine.cpp with a CMake `find_package()`
 
 ## Example Usage
 
-After building the project, you can run the example executable to test the ASR system.
+The project includes two example applications:
+- `moonshine_example`: File-based transcription
+- `moonshine_live`: Real-time microphone transcription (requires SDL2)
 
-```sh
-./dist/bin/moonshine_example <models_dir> <wav_file>
+### Building Examples
+
+Build the project with examples enabled:
+
+```powershell
+.\scripts\build.ps1 -BuildType Release -BuildExamples
 ```
 
-Replace `<models_dir>` with the directory containing your ONNX models and `<wav_file>` with the path to a WAV file.
-
-### Example
-
-```sh
-./dist/bin/moonshine_example models/ example.wav
+### File-based Transcription
+Transcribe audio from a WAV file:
+```powershell
+.\dist\bin\moonshine_example.exe <models_dir> <wav_file>
 ```
+
+Replace <models_dir> with the directory containing your ONNX models and <wav_file> with the path to a WAV file.
+
+Example:
+```powershell
+.\dist\bin\moonshine_example.exe models\ example.wav
+```
+
+### Live Transcription
+Real-time transcription from microphone input:
+```powershell
+.\dist\bin\moonshine_live.exe <models_dir>
+```
+
+Example:
+```powershell
+.\dist\bin\moonshine_live.exe models\
+```
+
+Press ESC or q to stop recording and exit.
 
 ## Using as a Library
 
