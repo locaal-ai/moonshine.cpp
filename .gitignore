@@ -13,3 +13,4 @@ CMakeUserPresets.json
 build/
 .vscode/
 dist/
+models/

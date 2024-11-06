@@ -39,18 +39,12 @@ target_include_directories(moonshine
 target_link_libraries(moonshine PUBLIC nlohmann_json::nlohmann_json)
 target_link_libraries(moonshine INTERFACE Ort)
 
-# Create example executable
-add_executable(moonshine_example examples/demo.cpp)
+# Option to build examples
+option(BUILD_EXAMPLES "Build example programs" OFF)
 
-target_link_libraries(moonshine_example
-    PRIVATE
-    moonshine
-)
-
-target_include_directories(moonshine_example
-    PRIVATE
-    ${ONNXRUNTIME_INCLUDE_DIRS}
-)
+if(BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
 
 # Installation rules
 include(GNUInstallDirs)
@@ -93,9 +87,4 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/moonshine-config.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/moonshine-config-version.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/moonshine
-)
-
-# Install example executable to bin directory
-install(TARGETS moonshine_example
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )

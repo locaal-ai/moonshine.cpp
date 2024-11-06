@@ -58,6 +58,7 @@ std::string readFileAsUtf8(const std::string &file_path)
 MoonshineModel::MoonshineModel(const std::string &models_dir)
     : memory_info_(Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU))
 {
+    std::cout << "Initializing Moonshine model from " << models_dir << std::endl;
     this->env_ = Ort::Env(ORT_LOGGING_LEVEL_WARNING, "MoonshineModel");
     preprocess_ = createSession(models_dir + "/preprocess.onnx");
     encode_ = createSession(models_dir + "/encode.onnx");
