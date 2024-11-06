@@ -84,6 +84,7 @@ After building you should have a folder like so (e.g. on Windows):
 ./dist
 ├───bin
 │       moonshine_example.exe
+│       moonshine_live.exe
 │       onnxruntime.dll
 │       onnxruntime_providers_shared.dll
 │       
